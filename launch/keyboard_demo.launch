@@ -1,0 +1,25 @@
+<launch>
+  <!-- keyboard detector from github -->
+  <node name="keyboard" pkg="keyboard" type="keyboard"></node>
+
+  <!-- simple control node that changes reference state (keyboard manager) -->
+  <node pkg="Drone-Demo" type="keyboard_manager.py" name="keyboard_manager_node" output="screen"></node>
+
+  <!-- state and safety node (implements FSA for transitioning between states and virtual cage limits) -->
+  <node name="state_safety_node" pkg="Drone-Demo" type="state_and_safety.py" output="screen">
+    <param name="virtual_cage/x" type="double" value="1.5" />
+    <param name="virtual_cage/y" type="double" value="1.5" />
+    <param name="virtual_cage/z" type="double" value="-1.5" />
+    <param name="acceptance_range" type="double" value="0.5" />
+  </node>
+
+  <!-- rviz visualization node -->
+  <node pkg="Drone-Demo" type="turtlebot_visualization.py" name="turtle_viz_node"></node>
+
+  <include file="src/Freyja/freyja_controller.launch" >
+    <arg name="vicon_topic" value="/vicon/JOZI/JOZI"/>
+    <arg name="thrust_scaler" value="200"/>
+    <arg name="total_mass" value="1.9"/>
+  </include>
+
+</launch>
